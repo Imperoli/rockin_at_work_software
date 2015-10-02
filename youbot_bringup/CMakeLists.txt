@@ -8,10 +8,7 @@ find_package(catkin REQUIRED COMPONENTS
   arm_planner
   youbot_driver_ros_interface
   mcr_object_recognition_bounding_box
-  youbot_manipulation
-  youbot_object_recognition
   youbot_joystick_control
-  camera1394
   holonomic_base_planner
 )
 

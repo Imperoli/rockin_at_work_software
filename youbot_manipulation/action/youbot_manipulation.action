@@ -1,6 +1,0 @@
-std_msgs/String[] object_name_list
-int32 mode
----
-bool move_base
-geometry_msgs/Pose base_target
----

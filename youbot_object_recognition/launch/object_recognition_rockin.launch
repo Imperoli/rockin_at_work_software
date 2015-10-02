@@ -1,8 +1,0 @@
-
-<launch>
-    <node name="kinect_obj_rec" pkg="youbot_object_recognition" type="kinect_object_recognition_server_rockin" output="screen"/>
-    <node name="camera_obj_rec" pkg="youbot_object_recognition" type="arm_camera_object_recognition_server" output="screen"/>
-    
-    <node name="camera_obj_rec_single_process_0" pkg="youbot_object_recognition" type="arm_camera_object_recognition_server_single_process" args="$(find youbot_object_recognition)/3d_models/ camera_arm_recognize_object_single_process_0" output="screen"/>
- 
-</launch>

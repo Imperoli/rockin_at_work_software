@@ -1,4 +1,0 @@
-<launch>
-  <include file="$(find youbot_object_recognition)/launch/object_recognition_multiviews.launch" /> 
-  <node name="manipulation_server" pkg="youbot_manipulation" type="youbot_manipulation_server_multiviews" output="screen"/> 
-</launch>

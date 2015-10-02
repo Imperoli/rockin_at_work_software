@@ -1,4 +1,0 @@
-geometry_msgs/Pose[] views
-geometry_msgs/Pose[] candidates
----
-int32[] filtered_views_indices
