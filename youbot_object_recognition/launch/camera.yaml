@@ -1,0 +1,5 @@
+video_mode: 1024x768_mono8
+frame_id: arm_camera_frame
+camera_info_url: package://youbot_calibration/calib/arm_camera_intrinsic.yaml
+frame_rate: 30
+iso_speed: 400

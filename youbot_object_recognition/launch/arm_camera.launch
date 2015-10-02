@@ -1,0 +1,8 @@
+
+<launch>
+
+    <node name="camera1394" pkg="camera1394" type="camera1394_node" >
+      <rosparam file="$(find youbot_object_recognition)/launch/camera.yaml"/>
+      <remap from="camera" to="arm_camera"/>
+    </node>
+</launch>

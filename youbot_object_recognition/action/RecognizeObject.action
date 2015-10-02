@@ -1,0 +1,24 @@
+std_msgs/String object_name
+geometry_msgs/Pose[] initial_guess_list
+float64[] object_guess_avgDist
+geometry_msgs/Pose[] views
+geometry_msgs/Pose[] previous_views
+geometry_msgs/Pose current_view
+
+#geometry_msgs/Pose[] ee_arm
+#geometry_msgs/Pose[] camera_ee
+
+sensor_msgs/Image image
+sensor_msgs/CameraInfo camera_info
+std_msgs/Bool acquire_image
+---
+mcr_perception_msgs/ObjectList object_list
+geometry_msgs/Pose workspace_pose
+
+geometry_msgs/Pose[] object_guess_poses
+float64[] object_guess_avgDist
+
+geometry_msgs/Pose object_pose
+
+int32 next_best_view_index
+---
