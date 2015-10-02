@@ -1,0 +1,21 @@
+<launch>
+  
+  <arg name="map_file" default="map.yaml" />
+  <arg name="laser_port" default="/dev/sensors/hokuyo" />
+	<arg name="laser_topic" default="/base_scan" />
+	<arg name="laser_frame_id" default="/hokuyo" />
+
+	<!-- Hokuyo Laser -->
+	<node name="hokuyo_node" pkg="hokuyo_node" type="hokuyo_node" args="_port:=$(arg laser_port) _frame_id:=$(arg laser_frame_id) /scan:=$(arg laser_topic)" output="screen" />
+	<node pkg="tf" type="static_transform_publisher" name="hokuyo_link_broadcaster" args="0.37 0 0.1 0 0 0 1 /base_link /hokuyo 100" />
+	<node pkg="tf" type="static_transform_publisher" name="virtual_laser_link_broadcaster" args="0 -.225 0.1 -1.5707 0 0 /base_link /virtual_laser 100" />
+	
+	<node pkg="holonomic_base_planner" type="kinect_scan" name="kinect_scan" />
+	<node pkg="holonomic_base_planner" type="multiple_scan_merger" name="multi_scan_merger" />
+
+  <node name="map_server" pkg="map_server" type="map_server" args="$(find holonomic_base_planner)/cfg/$(arg map_file)" output="screen" />
+
+  <!--<include file="$(find holonomic_base_planner)/launch/glocalizer_merged_scan.launch"/>-->
+  <include file="$(find holonomic_base_planner)/launch/merged_scan/amcl_merged_scan.launch"/>
+
+</launch>

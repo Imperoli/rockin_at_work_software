@@ -1,0 +1,14 @@
+#goal definition
+geometry_msgs/Point cartesian_position
+float64 gripper_pitch
+float64 gripper_roll
+float64 gaze_distance
+float64[5] 	joints_target
+int32 mode
+string frame_id
+---
+#result definition
+bool move_base
+geometry_msgs/Pose base_target
+---
+#feedback definition

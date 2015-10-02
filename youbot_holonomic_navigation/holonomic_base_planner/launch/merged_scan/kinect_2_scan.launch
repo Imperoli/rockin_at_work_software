@@ -1,0 +1,16 @@
+<launch>
+  
+  <arg name="map_file" default="map.yaml" />
+  <arg name="laser_port" default="/dev/sensors/hokuyo" />
+	<arg name="laser_topic" default="/base_scan" />
+	<arg name="laser_frame_id" default="/hokuyo" />
+
+
+  <node pkg="tf" type="static_transform_publisher" name="arm_base" args="0.143 0 0.046 0 0 0 1 /base_link /arm_base 100" />	
+  <node pkg="tf" type="static_transform_publisher" name="camera_rgb_optical_frame" args="-0.3483 -0.01316162 0.643236 0.228405 0.326475 -0.502927 0.767014 /arm_base /tower_cam3d_link 100" />
+	<node pkg="tf" type="static_transform_publisher" name="virtual_laser_link_broadcaster" args="0 -.225 -0.05 -1.5707 0 0 /base_link /virtual_laser 100" />
+	<!--<node pkg="tf" type="static_transform_publisher" name="virtual_laser_link_broadcaster" args="0 0 0 0 0 0 1  /tower_cam3d_link /virtual_laser 100" />-->
+	
+	<node pkg="holonomic_base_planner" type="kinect_scan" name="kinect_scan" output="screen"/>
+
+</launch>

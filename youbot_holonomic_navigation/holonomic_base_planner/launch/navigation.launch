@@ -1,0 +1,22 @@
+<launch>
+  
+  <arg name="map_file" default="map.yaml" />
+  <arg name="laser_port" default="/dev/sensors/hokuyo" />
+	<arg name="laser_topic" default="/base_scan" />
+	<arg name="laser_frame_id" default="/hokuyo" />
+
+	<!-- Hokuyo Laser -->
+	<node name="hokuyo_node" pkg="hokuyo_node" type="hokuyo_node" args="_port:=$(arg laser_port) _frame_id:=$(arg laser_frame_id) /scan:=$(arg laser_topic)" output="screen" />
+	<node pkg="tf" type="static_transform_publisher" name="hokuyo_link_broadcaster" args="0.37 0 0.1 0 0 0 1 /base_link /hokuyo 100" />
+
+  
+  <node name="map_server" pkg="map_server" type="map_server" args="$(find holonomic_base_planner)/cfg/$(arg map_file)" output="screen" />
+
+  
+  <!--<include file="$(find holonomic_base_planner)/launch/glocalizer.launch"/>-->
+  <include file="$(find holonomic_base_planner)/launch/amcl.launch"/>
+  
+  <!-- Youbot Driver -->
+  <!--<include file="$(find youbot_driver_ros_interface)/launch/youbot_driver.launch" />-->
+
+</launch>

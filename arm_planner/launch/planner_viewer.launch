@@ -1,0 +1,6 @@
+<launch>
+
+	<node name="planner_viewer" pkg="arm_planner" type="planner_viewer" output="screen" />
+	<node name="viewer_key" pkg="arm_planner" type="key_for_opengl" output="screen" />
+
+</launch>

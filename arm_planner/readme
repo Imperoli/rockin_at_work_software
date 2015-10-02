@@ -1,0 +1,122 @@
+
+packages necessari:
+ - youbot_driver --> git clone -b hydro-devel https://github.com/youbot/youbot_driver
+ 
+ - trajectory_generator |
+			|--> git clone https://github.com/uzh-rpg/rpg_youbot_torque_control
+ - ik_solver_service	|
+
+!!! IMPORTANTE !!!!
+Per il corretto funzionamento è necessario usare il package 'youbot_driver_ros_interface' che ho caricato sul repository, in quanto ho aggiunto una piccola modifica all'originale.
+
+
+
+Avviare il planner del manipolatore:
+ - roslauch arm_planner planner.launch
+
+Avviare il planning_request_node per testare il planner:
+ - rosrun arm_planner planning_request_node
+ - tramite questo nodo è possibile passare al planner il target (nel base_frame del braccio)
+
+
+
+
+
+FUNZIONAMENTO:
+
+
+Il planner implementa un SimpleActionServer per compiere il planning e l'esecuzione delle traiettorie.
+Inoltre, durante l'esecuzione delle traiettorie da parte del manipolatore, il planner può ricevere messaggi del tipo arm_planner::TargetRequest (sul topic "/target_request") e arm_planner::Obstacles (sul topic "/obstacles_position") per il visual servoing ed evitare gli ostacoli. Quindi il planner è in grado di modificare le traiettorie durante la loro esecuzione.
+
+
+
+L'Action che riceve in input è definita nel file 'arm_planning.action':
+
+	#goal definition
+	geometry_msgs/Point cartesian_position
+	float64 gripper_pitch
+	float64 gripper_roll
+	int32 mode
+	---
+	#result definition
+	---
+	#feedback definition
+
+ - cartesian_position: la posizione cartesiana (nel base_frame del manipolatore) del target.
+ - gripper_pitch: l'angolo (in gradi) di pitch con cui l'End Effector deve raggiungere il target. 
+ - gripper_roll: l'angolo (in gradi) di roll del gripper con cui deve raggiungere il target. 
+ - mode:  0 --> simple_target_callback: il gripper raggiunge il target
+          1 --> grasping_callback: viene eseguita la grasping_pipeline (vedi sotto)
+	  2 --> dropping_callback: viene eseguita la dropping_pipeline
+
+
+
+Il messaggio di tipo arm_planner::TargetRequest ricevuto sul topic "/target_request" per fare visual servoing è definito nel file 'TargetRequest.msg':
+
+	geometry_msgs/Point cartesian_position
+	float64 gripper_pitch
+	float64 gripper_roll
+	int32 mode
+
+ - i parametri sono gli stessi dell' arm_planningAction
+
+
+
+Ostacoli:
+Gli ostacoli possono essere modellati in 2 modi diversi:
+ - bounding sphere: rappresentati tramite la posizione del centro (nel base_frame del braccio) ed il raggio delle sfera.
+ - bounding box (axis aligned): rappresentati tramite 2 punti (nel base_frame del braccio) min_p=(min_x, min_y, min_z) e max_p=(max_x, max_y, max_z).
+Nel planner sono hard-codati i 'fixed_obstacles' che rappresentano gli ostacoli ben definiti (base dello youbot, il braccio, l'asta posteriore, il laser...)
+Gli ostacoli riconosciuti dal modulo della visione possono essere passati al planner sul topic "/obstacles_position" sotto forma di messaggi arm_planner::Obstacles, definiti come segue:
+
+	arm_planner/Obstacle_msg[] obstacles
+	  geometry_msgs/Point position
+	    float64 x
+	    float64 y
+	    float64 z
+	  geometry_msgs/Point min_position
+	    float64 x
+	    float64 y
+	    float64 z
+	  geometry_msgs/Point max_position
+	    float64 x
+	    float64 y
+	    float64 z
+	  float64 radius
+
+ - obstacles: lista degli ostacoli
+ per ogni ostacolo: 
+	    - position e radius: usati solo nel caso in cui l'ostacolo è una bounding sphere. Rappresentano il centro della sfera nello spazio cartesiano (nel base_frame del braccio) ed il raggio.
+	    - min_position e max_position: usati solo nel caso in cui l'ostacolo è una bounding box.
+
+
+
+
+Visualizzazione:
+Il planner manda al nodo 'planner_viewer' tutto quello che deve essere visualizzato sotto forma di messaggi arm_planner::PlanningSceneFrame sul topic "/planning_scene_frame".
+La visualizzazione può essere disabilitata modificando il parametro "GUI" all'interno del .launch file.
+
+
+
+Grasping Pipeline (la Dropping Pipeline è simile):
+ - 1: open_gripper
+ - 2: approaching_procedure: il gripper si posiziona ad una distanza di circa 10cm dal target, puntandolo.
+ - 3: grasping_procedure: a questo punto il gripper raggiunge il target eseguendo una traiettoria rettilinea.
+ - 4: grasp: il gripper si chiude e viene verificato se il target sia stato effettivamente preso.
+ - 5: move_away_from_target: il gripper si allontana di circa 5cm dal punto in cui è stato preso il target eseguendo una traiettoria rettilinea.
+ - 6: move_to_fixed_pose: il manipolatore raggiunge una posa predefinita.
+
+
+
+Servizi ROS utili:
+da linea di comando:
+ - aprire il gripper: rosservice call /arm_planner/open_gripper
+ - chiudere il gripper: rosservice call /arm_planner/close_gripper
+ - restituire la posizione delle dita del gripper: rosservice call /youbot_driver_ros_interface/get_gripper_positions
+
+
+
+
+Un esempio di come dialogare con il planner vedere 'planning_request_node.cpp'
+
+

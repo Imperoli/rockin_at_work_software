@@ -1,0 +1,8 @@
+<launch>
+	
+	<node name="webots_ros_interface" pkg="arm_planner" type="webots_ros_interface" output="screen"/>
+	
+	<node name="move_robot_base" pkg="arm_planner" type="teleop_omni_key" output="screen" />
+
+
+</launch>

@@ -1,0 +1,10 @@
+<launch>
+  <include file="$(find youbot_driver_ros_interface)/launch/youbot_driver.launch" /> 
+  <include file="$(find mir_bringup)/components/openni.launch" /> 
+  <include file="$(find youbot_object_recognition)/launch/arm_camera.launch" /> 
+  <include file="$(find arm_planner)/launch/planner.launch" /> 
+  <include file="$(find youbot_joystick_control)/launch/youbot_joystick_control_arm_only.launch" /> 
+  <include file="$(find mcr_object_recognition_bounding_box)/ros/launch/object_recognition.launch" /> 
+  
+</launch>
+

@@ -1,0 +1,6 @@
+float64[3] 	target_position
+float64[3] 	target_normal
+---
+float64[3] 	ee_position
+bool feasible
+float64[5] 	joints_target

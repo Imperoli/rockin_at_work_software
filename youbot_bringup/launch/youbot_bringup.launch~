@@ -1,0 +1,43 @@
+<launch>
+        <!-- Arguments -->
+        <arg name="initial_pose_x" default="-2.00" />
+        <arg name="initial_pose_y" default="-1.50" />
+        <arg name="initial_pose_a" default="1.57" />
+	<arg name="map_file" default="work_map.yaml" />
+	<arg name="laser_port" default="/dev/sensors/hokuyo" />
+	<arg name="laser_topic" default="/scan" />
+	<arg name="laser_frame_id" default="/hokuyo" />
+
+	<!-- Hokuyo Laser -->
+	<node name="hokuyo_node" pkg="hokuyo_node" type="hokuyo_node" args="_port:=$(arg laser_port) _frame_id:=$(arg laser_frame_id) /scan:=$(arg laser_topic)" output="screen" />
+
+	<!-- Map Server -->
+	<node name="map_server" pkg="map_server" type="map_server" args="$(find rockin_launches)/maps/$(arg map_file)" output="screen" />
+
+        <!-- Youbot Driver -->
+        <include file="$(find youbot_driver_ros_interface)/launch/youbot_driver.launch" />
+
+        <!-- Glocalizer -->
+        <node name="glocalizer" pkg="glocalizer" type="glocalizer_node" output="screen">
+            <remap from="static_map" to="/static_map" />
+            <param name="particles" type="int" value="5000"/>
+
+            <!-- Override Frame Params to include prefix -->
+            <param name="laser_topic" value="$(arg laser_topic)"/>
+            <param name="base_frame_id" value="/base_footprint"/>
+            <param name="odom_frame_id" value="/odom"/>
+            <param name="global_frame_id" value="/map"/> <!--common map frame for all robots -->
+
+            <!-- Set initial pose -->
+            <param name="initial_pose_x" value="$(arg initial_pose_x)" />
+            <param name="initial_pose_y" value="$(arg initial_pose_y)" />
+            <param name="initial_pose_a" value="$(arg initial_pose_a)" />
+            <param name="initial_cov_xx" value="0.25" />
+            <param name="initial_cov_yy" value="0.25" />
+            <param name="initial_cov_aa" value="0.25" />
+        </node>
+
+        <!-- Move Base -->
+        <include file="$(find youbot_navigation)/launch/move_base_global.launch" /> 
+</launch>
+

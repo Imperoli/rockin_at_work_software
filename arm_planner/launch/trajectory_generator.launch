@@ -1,0 +1,12 @@
+<launch>
+	
+	<param name="/youBotDriverCycleFrequencyInHz" value="300.0" />
+	<param name="/trajectoryGeneratorLoopRate" value="10.0" />
+
+	<!-- Launch the trajectory generator service -->
+	<node name="trajectory_generator" pkg="trajectory_generator" type="trajectory_service" />
+	
+	<!-- Launch the trajectory generator service -->
+	<node name="ik_solver_service" pkg="ik_solver_service" type="ik_solver_service"  />
+
+</launch>

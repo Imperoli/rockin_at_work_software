@@ -1,0 +1,21 @@
+<launch>
+  <master auto="start"/>
+  <param name="/use_sim_time" value="true"/>
+  
+  <node pkg="tf" type="static_transform_publisher" name="hokuyo_link_broadcaster" args="0.37 0 0 0 0 0 1 /base_footprint /hokuyo 100" />
+
+  <arg name="map_file" default="map.yaml" />
+  <node name="map_server" pkg="map_server" type="map_server" args="$(find holonomic_base_planner)/cfg/$(arg map_file)" output="screen" />
+
+  <node pkg="stage_ros" type="stageros" name="stageros" args="$(find holonomic_base_planner)/worlds/work.world" respawn="false" >
+    <param name="base_watchdog_timeout" value="0.2"/>
+  </node>
+  
+  <node pkg="holonomic_base_planner" type="base_scan" name="scan" />
+  <!--node pkg="holonomic_base_planner" type="base_scan_noisy" name="scan_noisy" /-->
+  
+  <include file="$(find holonomic_base_planner)/launch/glocalizer.launch"/>
+  <!--include file="$(find holonomic_base_planner)/launch/scan_noisy/glocalizer_noisy.launch"/-->
+  <!--include file="$(find holonomic_base_planner)/launch/scan_noisy/amcl_noisy.launch"/-->
+
+</launch>

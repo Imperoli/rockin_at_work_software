@@ -1,0 +1,26 @@
+<launch>
+  
+  <!-- AR_TRACKER_ALVAR -->
+  <arg name="marker_size" default="5.47" />
+	<arg name="max_new_marker_error" default="0.08" />
+	<arg name="max_track_error" default="0.2" />
+
+	<arg name="cam_image_topic" default="/camera/depth_registered/points" />
+	<arg name="cam_info_topic" default="/camera/rgb/camera_info" />		
+	<arg name="output_frame" default="/camera_rgb_optical_frame" />
+
+	<node name="ar_track_alvar" pkg="ar_track_alvar" type="individualMarkersNoKinect" respawn="false"  args="$(arg marker_size) $(arg max_new_marker_error) $(arg max_track_error) $(arg cam_image_topic) $(arg cam_info_topic) $(arg output_frame)" />
+
+  <!-- ARM FRAMES PUBLISHERS -->
+  <node pkg="tf" type="static_transform_publisher" name="arm_base" args="0.143 0 0.046 0 0 0 1 /base_link /arm_base 100" />		
+  <!--<node pkg="tf" type="static_transform_publisher" name="camera_rgb_optical_frame" args="-.3239 -.02 .6586 0.183748 0.317367 -0.48533 0.793706 /arm_base /camera_link 100" />-->
+  <node name="arm_frame_publisher" pkg="arm_planner" type="arm_frame_publisher" />
+  <!--<node pkg="tf" type="static_transform_publisher" name="arm_camera_frame" args="-0.14 -0.085 0 0 0 0 1 /end_effector /arm_camera_frame 100" />-->
+  
+  <!-- ARM TELEOP -->
+  <include file="$(find youbot_joystick_control)/launch/youbot_joystick_control_arm_only.launch"/>
+  
+  <!-- CALIBRATION NODE -->
+  <node pkg="youbot_calibration" type="camera_arm_calib" name="camera_arm_calibration" output="screen" args="$(find youbot_calibration)/cfg/kinect_calib.cfg" />
+  
+</launch>

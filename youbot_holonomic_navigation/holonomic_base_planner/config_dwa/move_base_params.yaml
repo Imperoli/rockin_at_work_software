@@ -1,0 +1,41 @@
+#footprint: [[-0.32720, -0.21869],
+#            [-0.32720, -0.0331],
+#            [-0.33260, -0.0310],
+#            [-0.33260, 0.0310],
+#            [-0.32720, 0.0325],
+#            [-0.32720, 0.21875],
+#            [0.32720, 0.21875],
+#            [0.32720, 0.0865],
+#            [0.33160, 0.0425],
+#            [0.33160, -0.0425],
+#            [0.32720, -0.0865],
+#            [0.32720, -0.21875]]
+
+footprint: [[0.285, 0.225], [0.375, 0.075], [0.375, -0.075], [0.285, -0.225], [-0.285, -0.225], [-0.285, 0.225]]
+#footprint: [[0.3285, 0.25], [0.4, 0.175], [0.4, -0.175], [0.3285, -0.225], [-0.3285, -0.25], [-0.3285, 0.25]]
+
+recovery_behavior_enabled: true     #default : true
+controller_frequency: 10.0          #default : 20.0
+controller_patience: 2.0            #default : 15.0
+planner_patience: 2.0               #default : 5.0
+planner_frequency: 0.2              #default : 0.0
+clearing_radius: 0.6              #default : not found
+footprint_padding: 0.05             #default : not found
+clearing_rotation_allowed: false    #default : true
+oscillation_distance: 2.0           #default : 0.5
+shutdown_costmaps: false             #default : false
+recovery_behaviors:
+  - name: 'conservative_reset'
+    type: 'clear_costmap_recovery/ClearCostmapRecovery'
+  - name: 'aggressive_reset'
+    type: 'clear_costmap_recovery/ClearCostmapRecovery'
+base_global_planner: global_planner/GlobalPlanner
+GlobalPlanner:
+    use_grid_path: False
+    use_dijkstra: True
+    allow_unknown: False
+    default_tolerance: 0.0 #previous value: 0.2
+    visualize_potential: True
+    use_quadratic: True)
+    use_grid_path: False)
+    old_navfn_behavior: False

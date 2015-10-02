@@ -1,0 +1,25 @@
+<launch>
+
+  <node pkg="holonomic_base_planner" type="base_planner_ActionServer" name="base_planner_ActionServer" args="$(find holonomic_base_planner)/cfg" output="screen" >
+    <remap from="/base_scan" to ="/merged_base_scan"/>
+  </node>
+  
+   <node pkg="holonomic_base_planner" type="holonomic_base_planner_ActionServer" name="holonomic_base_planner_ActionServer" args="$(find holonomic_base_planner)/cfg" output="screen" >
+    <remap from="/base_scan" to ="/merged_base_scan"/>
+  </node>
+  
+  <node pkg="holonomic_base_planner" type="holonomic_base_planner_ActionClient" name="holonomic_base_planner_ActionClient" args="$(find holonomic_base_planner)/cfg" output="screen">
+    <remap from="/base_scan" to ="/merged_base_scan"/>
+  </node>
+
+  <node pkg="move_base" type="move_base" respawn="true" name="move_base" output="screen">
+    <param name="base_local_planner" value="dwa_local_planner/DWAPlannerROS" />
+	  <rosparam file="$(find holonomic_base_planner)/config_dwa/move_base_params.yaml" command="load" />
+		<rosparam file="$(find holonomic_base_planner)/config_dwa/costmap_common_params_merged.yaml" command="load" ns="global_costmap"/>
+		<rosparam file="$(find holonomic_base_planner)/config_dwa/costmap_common_params_merged.yaml"	command="load" ns="local_costmap" />
+		<rosparam file="$(find holonomic_base_planner)/config_dwa/local_costmap_params.yaml" command="load" />
+		<rosparam file="$(find holonomic_base_planner)/config_dwa/global_costmap_params.yaml" command="load" />
+		<rosparam file="$(find holonomic_base_planner)/config_dwa/dwa_local_planner_params.yaml" command="load" ns="DWAPlannerROS" />
+	</node>
+  <!--<include file="$(find youbot_navigation_global)/launch/move_base_global.launch"/>-->
+</launch>
