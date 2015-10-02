@@ -1,0 +1,4 @@
+<launch>
+  <include file="$(find youbot_object_recognition)/launch/object_recognition.launch" /> 
+  <node name="manipulation_server" pkg="youbot_manipulation" type="youbot_manipulation_server_demo" output="screen"/> 
+</launch>
